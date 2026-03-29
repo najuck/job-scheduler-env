@@ -7,7 +7,7 @@ env = Inference()
 
 @app.post("/reset")
 def reset():
-    return env.reset()   # ❗ MUST return raw state ONLY
+    return env.reset()   # ✅ MUST return raw state only
 
 
 @app.post("/step")
@@ -23,4 +23,4 @@ def step(action: int):
 
 @app.get("/state")
 def state():
-    return env.state()
+    return env.get_state()

@@ -17,5 +17,5 @@ class Inference:
 
         return self.state, 1, done, {"info": "ok"}
 
-    def state(self):
+    def get_state(self):
         return self.state
