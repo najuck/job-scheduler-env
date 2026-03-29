@@ -7,12 +7,14 @@ env = Inference()
 
 @app.post("/reset")
 def reset():
-    return env.reset()   # ✅ MUST return raw state only
+    # MUST return raw state only (this fixes your reset error)
+    return env.reset()
 
 
 @app.post("/step")
 def step(action: int):
     state, reward, done, info = env.step(action)
+
     return {
         "state": state,
         "reward": reward,
