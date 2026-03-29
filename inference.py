@@ -1,17 +1,21 @@
 class Inference:
     def __init__(self):
-        self.state = {"status": "ready"}
+        self.reset()
 
     def reset(self):
-        self.state = {"status": "reset_done"}
+        self.state = {
+            "step_count": 0,
+            "status": "reset"
+        }
         return self.state
 
     def step(self, action: int):
-        self.state = {
-            "action_received": action,
-            "status": "running"
-        }
-        return self.state, 1, False, {"info": "ok"}
+        self.state["step_count"] += 1
+        self.state["last_action"] = action
 
-    def get_state(self):
+        done = self.state["step_count"] >= 5
+
+        return self.state, 1, done, {"info": "ok"}
+
+    def state(self):
         return self.state

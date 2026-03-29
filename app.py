@@ -1,43 +1,27 @@
 from fastapi import FastAPI
+from inference import Inference
 
 app = FastAPI()
-
-state = None
+env = Inference()
 
 
 @app.post("/reset")
 def reset():
-    global state
-    state = {
-        "step_count": 0,
-        "status": "reset"
-    }
-    return {
-        "state": state,
-        "reward": 0,
-        "done": False,
-        "info": "reset_success"
-    }
+    state = env.reset()
+    return {"state": state}
 
 
 @app.post("/step")
 def step(action: int):
-    global state
-
-    state["step_count"] += 1
-    state["last_action"] = action
-    state["status"] = "running"
-
-    done = state["step_count"] >= 5
-
+    state, reward, done, info = env.step(action)
     return {
         "state": state,
-        "reward": 1,
+        "reward": reward,
         "done": done,
-        "info": "step_success"
+        "info": info
     }
 
 
 @app.get("/state")
-def get_state():
-    return state
+def state():
+    return env.state()
