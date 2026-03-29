@@ -25,5 +25,12 @@ class Inference:
 
     def get_state(self):
         return self.state
-    def predict(x):
-     return {"result": x}
+
+
+# ✅ REQUIRED GLOBAL OBJECT
+model = Inference()
+
+
+# ✅ REQUIRED ENTRY FUNCTION FOR OPENENV
+def predict(input_data):
+    return model.reset()
