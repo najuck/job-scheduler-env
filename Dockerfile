@@ -6,3 +6,4 @@ COPY . .
 RUN pip install pydantic numpy
 
 CMD ["python", "baseline.py"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
