@@ -27,4 +27,7 @@ def step(action: int):
 
 @app.get("/state")
 def state():
-    return state_data
+    return 
+@app.get("/")
+def home():
+    return {"message": "API is running"}
