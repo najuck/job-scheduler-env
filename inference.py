@@ -25,5 +25,5 @@ class Inference:
 
     def get_state(self):
         return self.state
-    def predict(input_data):
-        return "result"
+    def predict(x):
+     return {"result": x}
