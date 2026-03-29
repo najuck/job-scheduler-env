@@ -2,32 +2,42 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-# Dummy state (replace with your real logic if you have OpenEnv env)
-state_data = {"status": "ready"}
+state = None
+
 
 @app.post("/reset")
 def reset():
-    global state_data
-    state_data = {"status": "reset_done"}
-    return state_data
+    global state
+    state = {
+        "step_count": 0,
+        "status": "reset"
+    }
+    return {
+        "state": state,
+        "reward": 0,
+        "done": False,
+        "info": "reset_success"
+    }
+
 
 @app.post("/step")
 def step(action: int):
-    global state_data
-    state_data = {
-        "action_received": action,
-        "status": "running"
-    }
+    global state
+
+    state["step_count"] += 1
+    state["last_action"] = action
+    state["status"] = "running"
+
+    done = state["step_count"] >= 5
+
     return {
-        "state": state_data,
+        "state": state,
         "reward": 1,
-        "done": False,
-        "info": "ok"
+        "done": done,
+        "info": "step_success"
     }
 
+
 @app.get("/state")
-def state():
-    return 
-@app.get("/")
-def home():
-    return {"message": "API is running"}
+def get_state():
+    return state
