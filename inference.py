@@ -1,29 +1,44 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
-state_data = {"status": "ready"}
+state_data = {}
+
+
+class ActionInput(BaseModel):
+    action: int
 
 
 @app.post("/reset")
 def reset():
     global state_data
-    state_data = {"status": "reset_done"}
+    state_data = {
+        "step_count": 0,
+        "last_action": -1,
+        "status": "reset"
+    }
     return state_data
 
 
 @app.post("/step")
-def step(action: int):
+def step(input_data: ActionInput):
     global state_data
-    state_data = {
-        "action_received": action,
-        "status": "running"
-    }
+
+    action = input_data.action
+
+    state_data["step_count"] += 1
+    state_data["last_action"] = action
+    state_data["status"] = "running"
+
+    done = state_data["step_count"] >= 5
+    reward = 1
+
     return {
         "state": state_data,
-        "reward": 1,
-        "done": False,
-        "info": "ok"
+        "reward": reward,
+        "done": done,
+        "info": {}
     }
 
 
