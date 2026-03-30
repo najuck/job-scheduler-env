@@ -1,34 +1,32 @@
-class Inference:
-    def __init__(self):
-        self.state = None
+from fastapi import FastAPI
 
-    def reset(self):
-        self.state = {
-            "step_count": 0,
-            "last_action": -1,
-            "status": "reset"
-        }
-        return self.state
+app = FastAPI()
 
-    def step(self, action: int):
-        if self.state is None:
-            return self.reset(), 0, False, {"error": "not reset"}
-
-        self.state["step_count"] += 1
-        self.state["last_action"] = action
-        self.state["status"] = "running"
-
-        done = self.state["step_count"] >= 5
-        reward = 1
-
-        return self.state, reward, done, {}
-
-    def get_state(self):
-        return self.state
+state_data = {"status": "ready"}
 
 
-model = Inference()
+@app.post("/reset")
+def reset():
+    global state_data
+    state_data = {"status": "reset_done"}
+    return state_data
 
-def predict(input_data=None):
-    model.reset()
-    return model.get_state()
+
+@app.post("/step")
+def step(action: int):
+    global state_data
+    state_data = {
+        "action_received": action,
+        "status": "running"
+    }
+    return {
+        "state": state_data,
+        "reward": 1,
+        "done": False,
+        "info": "ok"
+    }
+
+
+@app.get("/state")
+def state():
+    return state_data
