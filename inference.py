@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-state_data = {}
+state_data = None
 
 
 class ActionInput(BaseModel):
@@ -25,6 +25,10 @@ def reset():
 def step(input_data: ActionInput):
     global state_data
 
+    # ✅ HANDLE if reset not called
+    if state_data is None:
+        reset()
+
     action = input_data.action
 
     state_data["step_count"] += 1
@@ -44,4 +48,10 @@ def step(input_data: ActionInput):
 
 @app.get("/state")
 def state():
+    global state_data
+
+    # ✅ HANDLE if reset not called
+    if state_data is None:
+        reset()
+
     return state_data
