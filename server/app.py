@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import uvicorn
 
 app = FastAPI()
 
@@ -35,11 +36,10 @@ def step(input_data: ActionInput):
     state_data["status"] = "running"
 
     done = state_data["step_count"] >= 5
-    reward = 1.0
 
     return {
         "state": state_data,
-        "reward": reward,
+        "reward": 1.0,
         "done": done,
         "info": {}
     }
@@ -53,3 +53,13 @@ def state():
         reset()
 
     return {"state": state_data}
+
+
+# ✅ REQUIRED MAIN FUNCTION
+def main():
+    uvicorn.run("server.app:app", host="0.0.0.0", port=8000)
+
+
+# ✅ REQUIRED ENTRY POINT
+if __name__ == "__main__":
+    main()

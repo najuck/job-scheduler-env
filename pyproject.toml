@@ -1,7 +1,6 @@
 [project]
 name = "job-scheduler-env"
 version = "0.1.0"
-description = "OpenEnv environment"
 dependencies = [
     "fastapi",
     "uvicorn",
@@ -9,4 +8,4 @@ dependencies = [
 ]
 
 [project.scripts]
-server = "server.app:app"
+server = "server.app:main"
