@@ -9,7 +9,7 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 # OpenAI client (for requirement)
 client = OpenAI(
     base_url=API_BASE_URL,
-    api_key=HF_TOKEN
+    api_key=HF_TOKEN or "dummy-key"
 )
 
 def run():
