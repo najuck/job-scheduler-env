@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from env.environment import JobSchedulerEnv
 import uvicorn
 
 app = FastAPI()
-
-state_data = None
+env = JobSchedulerEnv()
 
 
 class ActionInput(BaseModel):
@@ -13,51 +13,30 @@ class ActionInput(BaseModel):
 
 @app.post("/reset")
 def reset():
-    global state_data
-    state_data = {
-        "step_count": 0,
-        "last_action": -1,
-        "status": "reset"
-    }
-    return {"state": state_data, "info": {}}
+    state = env.reset()
+    return {"state": state, "info": {}}
 
 
 @app.post("/step")
 def step(input_data: ActionInput):
-    global state_data
-
-    if state_data is None:
-        reset()
-
-    action = input_data.action
-
-    state_data["step_count"] += 1
-    state_data["last_action"] = action
-    state_data["status"] = "running"
-
-    done = state_data["step_count"] >= 5
+    state, reward, done, info = env.step(input_data.action)
 
     return {
-        "state": state_data,
-        "reward": 1.0,
+        "state": state,
+        "reward": reward,
         "done": done,
-        "info": {}
+        "info": info
     }
 
 
 @app.get("/state")
 def state():
-    global state_data
-
-    if state_data is None:
-        reset()
-
-    return {"state": state_data}
+    return {"state": env.state()}
 
 
 # ✅ REQUIRED MAIN FUNCTION
 def main():
-    uvicorn.run("server.app:app", host="0.0.0.0", port=8000)
+    uvicorn.run("server.app:app", host="0.0.0.0", port=7860)
 
 
 # ✅ REQUIRED ENTRY POINT
