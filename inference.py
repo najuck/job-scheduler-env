@@ -3,8 +3,7 @@ import requests
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:7860")
 MODEL_NAME = os.getenv("MODEL_NAME", "job-scheduler-env")
-HF_TOKEN = os.getenv("HF_TOKEN", None)
-
+HF_TOKEN = os.getenv("HF_TOKEN")
 def run():
     # Reset environment
     res = requests.post(f"{API_BASE_URL}/reset")
