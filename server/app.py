@@ -1,8 +1,11 @@
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+# Add project root to path
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
 
+from env.environment import JobSchedulerEnv
 from fastapi import FastAPI
 from pydantic import BaseModel
 from env.environment import JobSchedulerEnv
